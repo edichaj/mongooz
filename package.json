@@ -1,0 +1,19 @@
+{
+  "name": "mongooz",
+  "version": "0.0.1",
+  "description": "A library that fascilitates CRUD operations with MongoDB",
+  "main": "dist/mongooz.js",
+  "scripts": {
+    "test": "tsc src/test.ts --outDir dist/ && node dist/test.js"
+  },
+  "keywords": [
+    "mongooz",
+    "mongodb",
+    "crud"
+  ],
+  "author": "Aptsoft",
+  "license": "ISC",
+  "devDependencies": {
+    "mongodb": "^3.5.9"
+  }
+}
