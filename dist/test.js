@@ -44,14 +44,20 @@ function main() {
         var _a, _b;
         return __generator(this, function (_c) {
             switch (_c.label) {
-                case 0:
-                    _b = (_a = console).log;
-                    return [4 /*yield*/, mongooz.read({ name: { $eq: "Mariam Kinsman" } }, { db: "data", collection: "person" })];
+                case 0: return [4 /*yield*/, mongooz.openConnection()];
                 case 1:
+                    _c.sent();
+                    _b = (_a = console).log;
+                    return [4 /*yield*/, mongooz.deleteMany({ name: "Philip Ralp" }, { db: "data", collection: "person" })];
+                case 2: return [4 /*yield*/, (_c.sent()).result];
+                case 3:
                     _b.apply(_a, [_c.sent()]);
+                    return [4 /*yield*/, mongooz.closeConnection()];
+                case 4:
+                    _c.sent();
                     return [2 /*return*/];
             }
         });
     });
 }
-main()["catch"](function (err) { return console.error(err); });
+main();

@@ -42,149 +42,203 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.Connection = exports.Mongooz = void 0;
-var mongodb_1 = require("mongodb");
+exports.Mongooz = void 0;
+var connection_1 = require("./connection");
+var crud_1 = require("./crud");
 /**
  * Mongooz
  * @description wrapper class
  */
 var Mongooz = /** @class */ (function () {
     function Mongooz(url) {
-        this._connection = new Connection();
         this._url = url;
     }
-    Mongooz.prototype.read = function (query, lookUpOptions) {
+    Mongooz.prototype.insertMany = function (documents, lookUpOptions) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0: return [4 /*yield*/, this._connection.establish(this._url)];
+            var response, err_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.updateAndValidateLookupOptions(lookUpOptions);
+                        return [4 /*yield*/, this.ensureConnectionIsEstablishedAndOpen()];
                     case 1:
-                        _b.sent();
-                        return [4 /*yield*/, this._connection.useDB(lookUpOptions.db)];
+                        _a.sent();
+                        _a.label = 2;
                     case 2:
-                        _b.sent();
-                        return [4 /*yield*/, this._connection.useCollection(lookUpOptions.collection)];
+                        _a.trys.push([2, 5, , 6]);
+                        return [4 /*yield*/, this._connection.use({ db: this._dbName, collection: this._collectionName })];
                     case 3:
-                        _b.sent();
-                        _a = this;
-                        return [4 /*yield*/, Reader.read(this._connection.collection(), query)];
-                    case 4: return [4 /*yield*/, (_b.sent())];
+                        _a.sent();
+                        return [4 /*yield*/, crud_1.Inserter.insertMany(this._connection.collection(), documents)];
+                    case 4:
+                        response = _a.sent();
+                        return [2 /*return*/, response];
                     case 5:
-                        _a._lastResponse = _b.sent();
-                        return [4 /*yield*/, this._connection.kill()];
-                    case 6:
-                        _b.sent();
-                        return [4 /*yield*/, this._lastResponse];
-                    case 7: return [2 /*return*/, _b.sent()];
+                        err_1 = _a.sent();
+                        throw err_1;
+                    case 6: return [2 /*return*/];
                 }
             });
         });
     };
-    Mongooz.prototype.lastResponse = function () {
-        return this._lastResponse;
+    Mongooz.prototype.findAll = function (query, lookUpOptions) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a, err_2;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        this.updateAndValidateLookupOptions(lookUpOptions);
+                        return [4 /*yield*/, this.ensureConnectionIsEstablishedAndOpen()];
+                    case 1:
+                        _b.sent();
+                        _b.label = 2;
+                    case 2:
+                        _b.trys.push([2, 6, , 7]);
+                        return [4 /*yield*/, this._connection.use({ db: this._dbName, collection: this._collectionName })];
+                    case 3:
+                        _b.sent();
+                        _a = this;
+                        return [4 /*yield*/, crud_1.Finder.findAll(this._connection.collection(), query)];
+                    case 4: return [4 /*yield*/, (_b.sent())];
+                    case 5:
+                        _a._lastRead = _b.sent();
+                        return [2 /*return*/, this._lastRead];
+                    case 6:
+                        err_2 = _b.sent();
+                        throw err_2;
+                    case 7: return [2 /*return*/];
+                }
+            });
+        });
     };
-    return Mongooz;
-}());
-exports.Mongooz = Mongooz;
-/**
- * @class Connection
- * @description holds connection to the db
- */
-var Connection = /** @class */ (function () {
-    function Connection() {
-    }
-    Connection.prototype.establish = function (url) {
+    Mongooz.prototype.updateMany = function (filter, updateQuery, lookUpOptions) {
+        return __awaiter(this, void 0, void 0, function () {
+            var err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.updateAndValidateLookupOptions(lookUpOptions);
+                        return [4 /*yield*/, this.ensureConnectionIsEstablishedAndOpen()];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 5, , 6]);
+                        return [4 /*yield*/, this._connection.use({ db: this._dbName, collection: this._collectionName })];
+                    case 3:
+                        _a.sent();
+                        return [4 /*yield*/, crud_1.Updater.updateMany(this._connection.collection(), filter, updateQuery)];
+                    case 4: return [2 /*return*/, _a.sent()];
+                    case 5:
+                        err_3 = _a.sent();
+                        throw err_3;
+                    case 6: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Mongooz.prototype.deleteMany = function (filter, lookUpOptions) {
+        return __awaiter(this, void 0, void 0, function () {
+            var err_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.updateAndValidateLookupOptions(lookUpOptions)];
+                    case 1:
+                        _a.sent();
+                        return [4 /*yield*/, this.ensureConnectionIsEstablishedAndOpen()];
+                    case 2:
+                        _a.sent();
+                        _a.label = 3;
+                    case 3:
+                        _a.trys.push([3, 6, , 7]);
+                        return [4 /*yield*/, this._connection.use({ db: this._dbName, collection: this._collectionName })];
+                    case 4:
+                        _a.sent();
+                        return [4 /*yield*/, crud_1.Deleter.deleteMany(this._connection.collection(), filter)];
+                    case 5: return [2 /*return*/, _a.sent()];
+                    case 6:
+                        err_4 = _a.sent();
+                        throw err_4;
+                    case 7: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Mongooz.prototype.openConnection = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a, err_5;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _b.trys.push([0, 5, , 6]);
+                        _a = !this._connection || this._connection.notInitialized();
+                        if (_a) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this._connection.isClosed()];
+                    case 1:
+                        _a = (_b.sent());
+                        _b.label = 2;
+                    case 2:
+                        if (!_a) return [3 /*break*/, 4];
+                        this._connection = new connection_1.MongoozConnection();
+                        return [4 /*yield*/, this._connection.open(this._url)];
+                    case 3:
+                        _b.sent();
+                        _b.label = 4;
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
+                        err_5 = _b.sent();
+                        throw err_5;
+                    case 6: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Mongooz.prototype.closeConnection = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!this._connection.isOpen()) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this._connection.close()];
+                    case 1:
+                        _a.sent();
+                        this._connection = new connection_1.MongoozConnection();
+                        _a.label = 2;
+                    case 2: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Mongooz.prototype.updateAndValidateLookupOptions = function (lookUpOptions) {
+        if (lookUpOptions) {
+            this._dbName = lookUpOptions.db || this._dbName;
+            this._collectionName = lookUpOptions.collection || this._collectionName;
+        }
+        if (!this._dbName || !this._collectionName) {
+            throw (new Error("lookUpOptions can only be omitted if there is already cached values for it"));
+        }
+    };
+    Mongooz.prototype.ensureConnectionIsEstablishedAndOpen = function () {
         return __awaiter(this, void 0, void 0, function () {
             var _a;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        _a = this;
-                        return [4 /*yield*/, mongodb_1.MongoClient.connect(url, { useUnifiedTopology: true })["catch"](function (err) { return console.error(err); })];
+                        _a = this._connection.notInitialized();
+                        if (_a) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this._connection.isClosed()];
                     case 1:
-                        _a._connection = _b.sent();
+                        _a = (_b.sent());
+                        _b.label = 2;
+                    case 2:
+                        if (_a) {
+                            throw (new Error("ensure connection is open before performing any operation"));
+                        }
                         return [2 /*return*/];
                 }
             });
         });
     };
-    Connection.prototype.kill = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                this.connection().close();
-                return [2 /*return*/];
-            });
-        });
-    };
-    Connection.prototype.useDB = function (dbName) {
-        return __awaiter(this, void 0, void 0, function () {
-            var _a, _b;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
-                    case 0:
-                        _a = this;
-                        _b = this._db;
-                        if (_b) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this._connection.db(dbName)];
-                    case 1:
-                        _b = (_c.sent());
-                        _c.label = 2;
-                    case 2:
-                        _a._db = _b;
-                        return [2 /*return*/, this._db];
-                }
-            });
-        });
-    };
-    Connection.prototype.useCollection = function (collectionName) {
-        return __awaiter(this, void 0, void 0, function () {
-            var _a, _b;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
-                    case 0:
-                        _a = this;
-                        _b = this._collection;
-                        if (_b) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this._db.collection(collectionName)];
-                    case 1:
-                        _b = (_c.sent());
-                        _c.label = 2;
-                    case 2:
-                        _a._collection = _b;
-                        return [2 /*return*/, this._collection];
-                }
-            });
-        });
-    };
-    Connection.prototype.connection = function () {
-        return this._connection;
-    };
-    Connection.prototype.db = function () {
-        return this._db;
-    };
-    Connection.prototype.collection = function () {
-        return this._collection;
-    };
-    return Connection;
+    return Mongooz;
 }());
-exports.Connection = Connection;
-/**
- * @class Reader
- */
-var Reader = /** @class */ (function () {
-    function Reader() {
-    }
-    Reader.read = function (collection, query) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, collection.find(query)];
-                    case 1: return [4 /*yield*/, (_a.sent()).toArray()];
-                    case 2: return [2 /*return*/, _a.sent()];
-                }
-            });
-        });
-    };
-    return Reader;
-}());
+exports.Mongooz = Mongooz;
